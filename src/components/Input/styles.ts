@@ -1,14 +1,26 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
+interface ContainerProps {
+  isFoscused: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
   background: #232129;
-  border-radius: 10px;
-  border: 2px solid #232129;
   padding: 16px;
   width: 100%;
-  color: #666360;
   display: flex;
   align-items: center;
+
+  color: #666360;
+  border: 2px solid #232129;
+  border-radius: 10px;
+
+  ${(props) =>
+    props.isFoscused &&
+    css`
+      color: #ff9000;
+      border-color: #ff9000;
+    `}
 
   & + div {
     margin-top: 8px;
