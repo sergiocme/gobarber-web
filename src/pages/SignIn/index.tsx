@@ -21,7 +21,8 @@ interface FormParams {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const { signIn } = useContext(AuthContext);
+  const { signIn, data } = useContext(AuthContext);
+  console.log('data: ', data);
 
   const handleSubmit = useCallback(
     async ({ email, password }: FormParams) => {
