@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 interface ContainerProps {
   isFoscused: boolean;
+  isFilled: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -15,11 +16,17 @@ export const Container = styled.div<ContainerProps>`
   border: 2px solid #232129;
   border-radius: 10px;
 
-  ${(props) =>
+  ${props =>
     props.isFoscused &&
     css`
       color: #ff9000;
       border-color: #ff9000;
+    `}
+
+  ${props =>
+    props.isFilled &&
+    css`
+      color: #ff9000;
     `}
 
   & + div {
@@ -39,6 +46,5 @@ export const Container = styled.div<ContainerProps>`
 
   svg {
     margin-right: 16px;
-    color: #666360;
   }
 `;
