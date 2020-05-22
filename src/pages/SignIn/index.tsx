@@ -43,13 +43,13 @@ const SignIn: React.FC = () => {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
           formRef.current?.setErrors(errors);
+        } else {
+          addToast({
+            type: 'error',
+            title: 'Authentication Error',
+            description: 'Invalid email or password',
+          });
         }
-
-        addToast({
-          type: 'error',
-          title: 'Authentication Error',
-          description: 'Invalid email or password',
-        });
       }
     },
     [signIn, addToast],
