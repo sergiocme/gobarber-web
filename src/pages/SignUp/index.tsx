@@ -3,9 +3,10 @@ import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 import getValidationErrors from '../../utils/getValidationErrors';
 
-import { Container, Content, Background } from './styles';
+import { Container, Content, Background, AnimationContainer } from './styles';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -36,25 +37,27 @@ const SignIn: React.FC = () => {
   return (
     <Container>
       <Content>
-        <img src={logoImg} alt="Gobaber's logo" />
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>SignUp an Account</h1>
+        <AnimationContainer>
+          <img src={logoImg} alt="Gobaber's logo" />
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>SignUp an Account</h1>
 
-          <Input name="name" icon={FiUser} placeholder="Name" />
-          <Input name="email" icon={FiMail} placeholder="Email" />
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Password"
-          />
-          <Button type="submit">SignUp</Button>
-        </Form>
+            <Input name="name" icon={FiUser} placeholder="Name" />
+            <Input name="email" icon={FiMail} placeholder="Email" />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Password"
+            />
+            <Button type="submit">SignUp</Button>
+          </Form>
 
-        <a href="#newAccount">
-          <FiArrowLeft />
-          SignIn
-        </a>
+          <Link to="/">
+            <FiArrowLeft />
+            SignIn
+          </Link>
+        </AnimationContainer>
       </Content>
       <Background />
     </Container>
