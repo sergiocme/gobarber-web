@@ -20,41 +20,47 @@ const SignIn: React.FC = () => {
   const { addToast } = useToast();
   const history = useHistory();
 
-  const handleSubmit = useCallback(async (data: object) => {
-    formRef.current?.setErrors({});
-    try {
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Name is required'),
-        email: Yup.string()
-          .required('Email is required')
-          .email('Email must be valid'),
-        password: Yup.string().min(6, 'Password must be at least 6 characters'),
-      });
-
-      await schema.validate(data, { abortEarly: false });
-
-      await api.post('/users', data);
-
-      addToast({
-        type: 'success',
-        title: 'Account Registered',
-        description: 'You already can use your credentials to login',
-      });
-
-      history.push('/');
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(error);
-        formRef.current?.setErrors(errors);
-      } else {
-        addToast({
-          type: 'error',
-          title: 'Register Error',
-          description: 'Unable to register, try again later',
+  const handleSubmit = useCallback(
+    async (data: object) => {
+      formRef.current?.setErrors({});
+      try {
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Name is required'),
+          email: Yup.string()
+            .required('Email is required')
+            .email('Email must be valid'),
+          password: Yup.string().min(
+            6,
+            'Password must be at least 6 characters',
+          ),
         });
+
+        await schema.validate(data, { abortEarly: false });
+
+        await api.post('/users', data);
+
+        addToast({
+          type: 'success',
+          title: 'Account Registered',
+          description: 'You already can use your credentials to login',
+        });
+
+        history.push('/');
+      } catch (error) {
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(error);
+          formRef.current?.setErrors(errors);
+        } else {
+          addToast({
+            type: 'error',
+            title: 'Register Error',
+            description: 'Unable to register, try again later',
+          });
+        }
       }
-    }
-  }, []);
+    },
+    [addToast, history],
+  );
 
   return (
     <Container>
