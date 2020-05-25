@@ -12,7 +12,7 @@ interface SignInParams {
 }
 
 interface AuthContextData {
-  data: object;
+  data: AuthState;
   signIn(credentials: SignInParams): Promise<void>;
   signOut(): void;
 }
