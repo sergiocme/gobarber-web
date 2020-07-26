@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
@@ -20,12 +20,14 @@ interface FormParams {
 }
 
 const ForgotPassword: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const formRef = useRef<FormHandles>(null);
 
   const { addToast } = useToast();
 
   const handleSubmit = useCallback(
     async ({ email }: FormParams) => {
+      setLoading(true);
       formRef.current?.setErrors({});
       try {
         const schema = Yup.object().shape({
@@ -54,6 +56,8 @@ const ForgotPassword: React.FC = () => {
             description: 'Something wrong is not right',
           });
         }
+      } finally {
+        setLoading(false);
       }
     },
     [addToast],
@@ -68,7 +72,9 @@ const ForgotPassword: React.FC = () => {
             <h1>Forgot Password</h1>
 
             <Input name="email" icon={FiMail} placeholder="Email" />
-            <Button type="submit">Recover Password</Button>
+            <Button loading={loading} type="submit">
+              Recover Password
+            </Button>
           </Form>
 
           <Link to="/">
