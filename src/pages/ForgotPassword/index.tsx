@@ -13,6 +13,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 import logoImg from '../../assets/logo.svg';
+import api from '../../services/api';
 
 interface FormParams {
   email: string;
@@ -33,7 +34,15 @@ const ForgotPassword: React.FC = () => {
 
         await schema.validate({ email }, { abortEarly: false });
 
-        // Recuperação de senha aqui
+        await api.post('/passwords/forgot', {
+          email,
+        });
+
+        addToast({
+          type: 'success',
+          title: 'Recover Password Requested',
+          description: 'Look at to your inbox for an recover password email.',
+        });
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           const errors = getValidationErrors(error);
