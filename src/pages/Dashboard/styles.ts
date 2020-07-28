@@ -56,3 +56,43 @@ export const Profile = styled.div`
     }
   }
 `;
+
+export const Content = styled.main`
+  display: flex;
+  max-width: 1120px;
+  margin: 64px auto;
+`;
+
+export const Schedule = styled.section`
+  flex: 1;
+  margin-right: 120px;
+
+  h1 {
+    font-size: 36px;
+  }
+
+  p {
+    display: flex;
+    margin-top: 8px;
+    color: #ff9000;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+
+  span + span::before {
+    content: '';
+    width: 1px;
+    height: 12px;
+    background: #ff9000;
+    margin: 0 8px;
+  }
+`;
+
+export const NextAppointment = styled.div``;
+
+export const Calendar = styled.aside`
+  width: 380px;
+`;
