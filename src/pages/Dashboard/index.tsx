@@ -26,9 +26,20 @@ interface MonthAvailabilityItem {
   availability: boolean;
 }
 
+interface Appointment {
+  id: string;
+  user_id: string;
+  date: string;
+  user: {
+    name: string;
+    avatar_url: string;
+  };
+}
+
 const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [appoitments, setAppoitments] = useState<Appointment[]>([]);
   const [monthAvailability, setMonthAvailability] = useState<
     MonthAvailabilityItem[]
   >([]);
@@ -60,6 +71,20 @@ const Dashboard: React.FC = () => {
         setMonthAvailability(data);
       });
   }, [currentMonth, user]);
+
+  useEffect(() => {
+    api
+      .get('/appointments/me', {
+        params: {
+          year: selectedDate.getFullYear(),
+          month: selectedDate.getMonth() + 1,
+          day: selectedDate.getDate(),
+        },
+      })
+      .then(({ data }) => {
+        setAppoitments(data);
+      });
+  }, [selectedDate]);
 
   const handleMonthChange = useCallback((month: Date) => {
     setCurrentMonth(month);
