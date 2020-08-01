@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { isToday } from 'date-fns';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import { FiPower, FiClock } from 'react-icons/fi';
@@ -31,6 +32,16 @@ const Dashboard: React.FC = () => {
   const [monthAvailability, setMonthAvailability] = useState<
     MonthAvailabilityItem[]
   >([]);
+
+  const weekDaysName = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
 
   const {
     signOut,
@@ -71,6 +82,14 @@ const Dashboard: React.FC = () => {
     }, [] as Date[]);
   }, [monthAvailability, currentMonth]);
 
+  const selectedDateText = useMemo(() => {
+    return `Day ${selectedDate.getDate()}`;
+  }, [selectedDate]);
+
+  const selectedDateDayOfWeek = useMemo(() => {
+    return weekDaysName[selectedDate.getDay()];
+  }, [weekDaysName, selectedDate]);
+
   return (
     <Container>
       <Header>
@@ -96,9 +115,9 @@ const Dashboard: React.FC = () => {
         <Schedule>
           <h1>Schedules</h1>
           <p>
-            <span>Today</span>
-            <span>6</span>
-            <span>Monday</span>
+            <span>{isToday(selectedDate) && 'Today'}</span>
+            <span>{selectedDateText}</span>
+            <span>{selectedDateDayOfWeek}</span>
           </p>
 
           <NextAppointment>
@@ -172,7 +191,8 @@ const Dashboard: React.FC = () => {
         <Calendar>
           <DayPicker
             fromMonth={new Date()}
-            disabledDays={unavailableDays}
+            disabledDays={{ daysOfWeek: [0, 6], ...unavailableDays }}
+            modifiers={{ available: { daysOfWeek: [1, 2, 3, 4, 5] } }}
             onDayClick={handleDayChange}
             onMonthChange={handleMonthChange}
             selectedDays={selectedDate}
