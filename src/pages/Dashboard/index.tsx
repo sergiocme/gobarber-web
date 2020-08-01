@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { isToday } from 'date-fns';
+import { isToday, parseISO, format } from 'date-fns';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import { FiPower, FiClock } from 'react-icons/fi';
@@ -30,6 +30,7 @@ interface Appointment {
   id: string;
   user_id: string;
   date: string;
+  hourFormatted: string;
   user: {
     name: string;
     avatar_url: string;
@@ -74,7 +75,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     api
-      .get('/appointments/me', {
+      .get<Appointment[]>('/appointments/me', {
         params: {
           year: selectedDate.getFullYear(),
           month: selectedDate.getMonth() + 1,
@@ -82,7 +83,13 @@ const Dashboard: React.FC = () => {
         },
       })
       .then(({ data }) => {
-        setAppoitments(data);
+        const formattedAppoitments = data.map(appoitment => {
+          return {
+            ...appoitment,
+            hourFormatted: format(parseISO(appoitment.date), 'HH:mm'),
+          };
+        });
+        setAppoitments(formattedAppoitments);
       });
   }, [selectedDate]);
 
@@ -114,6 +121,18 @@ const Dashboard: React.FC = () => {
   const selectedDateDayOfWeek = useMemo(() => {
     return weekDaysName[selectedDate.getDay()];
   }, [weekDaysName, selectedDate]);
+
+  const morningAppoitments = useMemo(() => {
+    return appoitments.filter(appoitment => {
+      return parseISO(appoitment.date).getHours() < 12;
+    });
+  }, [appoitments]);
+
+  const afternoonAppoitments = useMemo(() => {
+    return appoitments.filter(appoitment => {
+      return parseISO(appoitment.date).getHours() >= 12;
+    });
+  }, [appoitments]);
 
   return (
     <Container>
@@ -163,54 +182,43 @@ const Dashboard: React.FC = () => {
           <Section>
             <strong>Morning</strong>
 
-            <Appointment>
-              <span>
-                <FiClock />
-                09:00
-              </span>
+            {morningAppoitments.map(appointment => (
+              <Appointment key={appointment.id}>
+                <span>
+                  <FiClock />
+                  {appointment.hourFormatted}
+                </span>
 
-              <div>
-                <img
-                  alt="Sérgio Carvalho's Avatar"
-                  src="https://avatars3.githubusercontent.com/u/50501020?s=460&u=9d5d8f9983825b04cd47c1925693a27593c63404&v=4"
-                />
-                <strong>Sérgio Carvalho</strong>
-              </div>
-            </Appointment>
-
-            <Appointment>
-              <span>
-                <FiClock />
-                09:00
-              </span>
-
-              <div>
-                <img
-                  alt="Sérgio Carvalho's Avatar"
-                  src="https://avatars3.githubusercontent.com/u/50501020?s=460&u=9d5d8f9983825b04cd47c1925693a27593c63404&v=4"
-                />
-                <strong>Sérgio Carvalho</strong>
-              </div>
-            </Appointment>
+                <div>
+                  <img
+                    alt={`${appointment.user.name}'s Avatar`}
+                    src={appointment.user.avatar_url}
+                  />
+                  <strong>{appointment.user.name}</strong>
+                </div>
+              </Appointment>
+            ))}
           </Section>
 
           <Section>
             <strong>Afternoon</strong>
 
-            <Appointment>
-              <span>
-                <FiClock />
-                09:00
-              </span>
+            {afternoonAppoitments.map(appointment => (
+              <Appointment key={appointment.id}>
+                <span>
+                  <FiClock />
+                  {appointment.hourFormatted}
+                </span>
 
-              <div>
-                <img
-                  alt="Sérgio Carvalho's Avatar"
-                  src="https://avatars3.githubusercontent.com/u/50501020?s=460&u=9d5d8f9983825b04cd47c1925693a27593c63404&v=4"
-                />
-                <strong>Sérgio Carvalho</strong>
-              </div>
-            </Appointment>
+                <div>
+                  <img
+                    alt={`${appointment.user.name}'s Avatar`}
+                    src={appointment.user.avatar_url}
+                  />
+                  <strong>{appointment.user.name}</strong>
+                </div>
+              </Appointment>
+            ))}
           </Section>
         </Schedule>
         <Calendar>
