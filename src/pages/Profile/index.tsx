@@ -14,16 +14,25 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { useAuth } from '../../context/AuthContext';
 
+interface FormData {
+  name: string;
+  email: string;
+  old_password: string;
+  password: string;
+  password_confirmation: string;
+}
+
 const Profile: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
   const history = useHistory();
   const {
     data: { user },
+    updateUser,
   } = useAuth();
 
   const handleSubmit = useCallback(
-    async (data: object) => {
+    async (data: FormData) => {
       formRef.current?.setErrors({});
       try {
         const schema = Yup.object().shape({
@@ -31,20 +40,30 @@ const Profile: React.FC = () => {
           email: Yup.string()
             .required('Email is required')
             .email('Email must be valid'),
-          password: Yup.string().min(
-            6,
-            'Password must be at least 6 characters',
-          ),
+          old_password: Yup.string(),
+          password: Yup.string().when('old_password', {
+            is: val => !!val.length,
+            then: Yup.string().required('Required field'),
+            otherwise: Yup.string(),
+          }),
+          password_confirmation: Yup.string()
+            .when('old_password', {
+              is: val => !!val.length,
+              then: Yup.string().required('Required field'),
+              otherwise: Yup.string(),
+            })
+            .equals([Yup.ref('password'), null], 'Password must match'),
         });
 
         await schema.validate(data, { abortEarly: false });
 
-        await api.post('/users', data);
+        const { data: updatedUSer } = await api.put('/profiles', data);
+        updateUser(updatedUSer);
 
         addToast({
           type: 'success',
-          title: 'Account Registered',
-          description: 'You already can use your credentials to login',
+          title: 'Profile updated successfully',
+          description: 'Your profile was updated',
         });
 
         history.push('/');
@@ -55,13 +74,13 @@ const Profile: React.FC = () => {
         } else {
           addToast({
             type: 'error',
-            title: 'Register Error',
-            description: 'Unable to register, try again later',
+            title: 'Update Error',
+            description: 'Unable to update, try again later',
           });
         }
       }
     },
-    [addToast, history],
+    [addToast, updateUser, history],
   );
 
   return (
@@ -103,7 +122,7 @@ const Profile: React.FC = () => {
           />
 
           <Input
-            name="new_password"
+            name="password"
             icon={FiLock}
             type="password"
             placeholder="New Password"
