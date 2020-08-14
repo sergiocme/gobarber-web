@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, ChangeEvent } from 'react';
 import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
@@ -83,6 +83,19 @@ const Profile: React.FC = () => {
     [addToast, updateUser, history],
   );
 
+  const handleAvatarChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const data = new FormData();
+        data.append('avatar', e.target.files[0]);
+
+        const { data: updatedUser } = await api.patch('/users/avatar', data);
+        updateUser(updatedUser);
+      }
+    },
+    [updateUser],
+  );
+
   return (
     <Container>
       <header>
@@ -104,9 +117,10 @@ const Profile: React.FC = () => {
         >
           <AvatarInput>
             <img alt={`${user.name}'s Avatar`} src={user.avatar_url} />
-            <button type="button">
+            <label htmlFor="avatar">
               <FiCamera />
-            </button>
+              <input type="file" id="avatar" onChange={handleAvatarChange} />
+            </label>
           </AvatarInput>
 
           <h1>My Profile</h1>

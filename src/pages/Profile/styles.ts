@@ -56,10 +56,14 @@ export const AvatarInput = styled.div`
     border-radius: 50%;
   }
 
-  button {
+  label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     width: 48px;
     height: 48px;
+    cursor: pointer;
     background: #ff9000;
     border: none;
     border-radius: 50%;
@@ -67,8 +71,11 @@ export const AvatarInput = styled.div`
     bottom: 0;
     transition: background-color 0.2s;
 
+    input {
+      display: none;
+    }
+
     svg {
-      margin-top: 2px;
       width: 20px;
       height: 20px;
       color: #321e38;
