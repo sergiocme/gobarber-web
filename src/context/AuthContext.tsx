@@ -22,7 +22,7 @@ interface AuthContextData {
   data: AuthState;
   signIn(credentials: SignInParams): Promise<void>;
   signOut(): void;
-  updateUser(user: User): Promise<void>;
+  updateUser(user: User): void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -39,8 +39,8 @@ const useAuth = (): AuthContextData => {
 
 const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem('@Gobaber:token');
-    const user = localStorage.getItem('@Gobaber:user');
+    const token = localStorage.getItem('@GoBarber:token');
+    const user = localStorage.getItem('@GoBarber:user');
 
     if (token && user) {
       api.defaults.headers.authorization = `Bearer ${token}`;
@@ -54,8 +54,8 @@ const AuthProvider: React.FC = ({ children }) => {
     const { data: response } = await api.post('sessions', { email, password });
     const { token, user } = response;
 
-    localStorage.setItem('@Gobaber:token', token);
-    localStorage.setItem('@Gobaber:user', JSON.stringify(user));
+    localStorage.setItem('@GoBarber:token', token);
+    localStorage.setItem('@GoBarber:user', JSON.stringify(user));
 
     api.defaults.headers.authorization = `Bearer ${token}`;
 
@@ -63,15 +63,15 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@Gobaber:token');
-    localStorage.removeItem('@Gobaber:user');
+    localStorage.removeItem('@GoBarber:token');
+    localStorage.removeItem('@GoBarber:user');
 
     setData({} as AuthState);
   }, []);
 
   const updateUser = useCallback(
-    async (user: User) => {
-      await localStorage.setItem('@GoBarber:user', JSON.stringify(user));
+    (user: User) => {
+      localStorage.setItem('@GoBarber:user', JSON.stringify(user));
 
       setData({
         token: data.token,
