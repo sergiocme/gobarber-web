@@ -194,7 +194,7 @@ const Dashboard: React.FC = () => {
             <strong>Morning</strong>
 
             {morningAppoitments.length === 0 && (
-              <p>You do not have any appoitment in the morning</p>
+              <p>You do not have any appointment in the morning</p>
             )}
 
             {morningAppoitments.map(appointment => (
@@ -219,7 +219,7 @@ const Dashboard: React.FC = () => {
             <strong>Afternoon</strong>
 
             {afternoonAppoitments.length === 0 && (
-              <p>You do not have any appoitment in the afternoon</p>
+              <p>You do not have any appointment in the afternoon</p>
             )}
 
             {afternoonAppoitments.map(appointment => (
