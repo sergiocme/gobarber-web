@@ -20,6 +20,7 @@ import {
 } from './styles';
 
 import logoImg from '../../assets/logo.svg';
+import emptyAvatarImg from '../../assets/empty_profile.png';
 import api from '../../services/api';
 
 interface MonthAvailabilityItem {
@@ -148,7 +149,11 @@ const Dashboard: React.FC = () => {
           <img alt="GoBarber Logo" src={logoImg} />
 
           <Profile>
-            <img alt={`${user.name}'s Profile`} src={user.avatar_url} />
+            {user.avatar_url ? (
+              <img alt={`${user.name}'s Profile`} src={user.avatar_url} />
+            ) : (
+              <img alt={`${user.name}'s Profile`} src={emptyAvatarImg} />
+            )}
 
             <div>
               <span>Bem vindo,</span>
